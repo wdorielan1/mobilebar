@@ -15,7 +15,7 @@
   const easeOut = (t) => 1 - Math.pow(1 - t, 3);
 
   /* ------------------------------------------------------------------ */
-  /* Header: menu toggle, and its look while it sits over the scene      */
+  /* Header: menu toggle                                                 */
   /* ------------------------------------------------------------------ */
 
   const header = document.querySelector('[data-header]');
@@ -44,8 +44,11 @@
   }
 
   /* ------------------------------------------------------------------ */
-  /* Opening scene: a camera that moves from outside the bar, through    */
-  /* its service window, as the page scrolls                             */
+  /* Opening scene: the shutter rolls up, then the camera moves in        */
+  /* through the service window as the page scrolls.                     */
+  /* Depth is done with 2D transforms: each layer is scaled and moved as  */
+  /* a 3D camera would see it at its depth, which renders reliably on     */
+  /* every phone (no preserve-3d).                                        */
   /* ------------------------------------------------------------------ */
 
   const scene = document.querySelector('[data-scene]');
@@ -53,31 +56,30 @@
 
   function initScene(scene) {
     const stage = scene.querySelector('[data-scene-stage]');
-    const world = scene.querySelector('[data-scene-world]');
-    const bar = scene.querySelector('[data-scene-bar]');
-    const words = Array.from(scene.querySelectorAll('[data-scene-word]'));
-    const nearLights = scene.querySelector('[data-scene-lights-near]');
+    const frame = scene.querySelector('[data-scene-frame]');
+    const layers = Array.from(scene.querySelectorAll('.scene__layer')).map((el) => ({
+      el,
+      z: parseFloat(el.dataset.depth) || 0,
+    }));
+    const shutter = scene.querySelector('[data-scene-shutter]');
+    const name = scene.querySelector('[data-scene-name]');
     const glow = scene.querySelector('[data-scene-glow]');
-    const dusk = scene.querySelector('[data-scene-dusk]');
+    const fade = scene.querySelector('[data-scene-fade]');
     const intro = scene.querySelector('[data-scene-intro]');
     const cue = scene.querySelector('[data-scene-cue]');
-    const inside = scene.querySelector('[data-scene-inside]');
-    const plate = scene.querySelector('[data-scene-plate]');
-    const sign = scene.querySelector('[data-scene-sign]');
-    const sheen = scene.querySelector('[data-scene-sheen]');
 
-    const perspective = parseFloat(getComputedStyle(root).getPropertyValue('--scene-perspective')) || 1000;
-    const depthOf = (el) => (el ? parseFloat(getComputedStyle(el).getPropertyValue('--z')) || 0 : 0);
-    const nearZ = depthOf(nearLights);
-    const signZ = depthOf(sign);
+    const P = 1000;                // camera perspective, px
+    // The service window in the photograph, as fractions of its width and height
+    // (centre x, centre y, width, height). Matches .scene__shutter in the CSS.
+    const WINDOW = { x: 0.5537, y: 0.3307, w: 0.201, h: 0.2331 };
 
-    // Phases of the camera move, as fractions of the scroll through the scene.
-    const TRAVEL = [0.04, 0.92]; // camera leaves its seat .. reaches the window
-    const PAN = [0.04, 0.7];     // window drifts to the centre of the view
-    const HEADER_OVER_UNTIL = 0.15;
-    const MAX_ZOOM = 7;          // beyond this the photo turns soft
-    const INTRO_MS = 1800;       // the arrival animation on load
-    const INTRO_PULLBACK = -220;
+    // Phases, as fractions of the scroll through the scene.
+    const SHUTTER = [0.04, 0.3];   // the shutter rolls up
+    const TRAVEL = [0.1, 0.92];    // the camera moves to the window
+    const PAN = [0.08, 0.7];       // the window drifts to the centre
+    const MAX_ZOOM = 7;            // beyond this the photo turns soft
+    const INTRO_MS = 1800;
+    const INTRO_PULLBACK = -180;
 
     let geometry = null;
     let target = 0;
@@ -90,50 +92,22 @@
 
     const motionOn = () => !reduceMotion.matches;
 
-    loadSkyVideo();
-
-    function loadSkyVideo() {
-      const src = scene.dataset.skyVideo;
-      if (!src || !plate || !motionOn()) return;
-      const video = document.createElement('video');
-      video.className = 'scene__sky-video';
-      video.muted = true;
-      video.loop = true;
-      video.playsInline = true;
-      video.autoplay = true;
-      video.setAttribute('aria-hidden', 'true');
-      video.src = src;
-      video.addEventListener('error', () => video.remove(), { once: true });
-      plate.insertBefore(video, plate.querySelector('.scene__haze'));
-    }
-
     function measure() {
-      const styles = getComputedStyle(bar);
-      const wx = parseFloat(styles.getPropertyValue('--wx'));
-      const wy = parseFloat(styles.getPropertyValue('--wy'));
-      const ww = parseFloat(styles.getPropertyValue('--ww'));
-      const wh = parseFloat(styles.getPropertyValue('--wh'));
       const sw = stage.clientWidth;
       const sh = stage.clientHeight;
-      // offset* ignore transforms, so this is the bar as laid out at depth 0.
-      const windowX = bar.offsetLeft + wx * bar.offsetWidth - sw / 2;
-      const windowY = bar.offsetTop + wy * bar.offsetHeight - sh / 2;
-      // How much bigger the window must get to fill the view.
-      const fill = Math.max((sw * 1.1) / (ww * bar.offsetWidth), (sh * 1.1) / (wh * bar.offsetHeight));
-      const scaleEnd = Math.min(Math.max(fill, 1.01), MAX_ZOOM);
-      geometry = { windowX, windowY, scaleEnd };
+      // offset* ignore transforms: this is the photo as laid out at rest.
+      const fw = frame.offsetWidth;
+      const fh = frame.offsetHeight;
+      const windowX = frame.offsetLeft + WINDOW.x * fw - sw / 2;
+      const windowY = frame.offsetTop + WINDOW.y * fh - sh / 2;
+      const fill = Math.max((sw * 1.05) / (WINDOW.w * fw), (sh * 1.05) / (WINDOW.h * fh));
+      geometry = { windowX, windowY, scaleEnd: clamp(fill, 1.01, MAX_ZOOM) };
     }
 
     function readScroll() {
       const distance = scene.offsetHeight - stage.offsetHeight;
       const top = scene.getBoundingClientRect().top;
       target = distance > 0 ? clamp(-top / distance) : 0;
-      if (header) {
-        // See-through only while it sits over the light sky at the top of the scene.
-        const scrolled = -top;
-        const skyUntil = distance > 0 ? distance * HEADER_OVER_UNTIL : stage.offsetHeight * 0.08;
-        header.classList.toggle('is-over-scene', scrolled < skyUntil);
-      }
     }
 
     function queue() {
@@ -159,61 +133,45 @@
 
       const p = progress;
       const arrive = easeOut(introT);
-      // Zoom grows geometrically so the approach feels steady, not rushed at the end.
       const travel = Math.pow(clamp((p - TRAVEL[0]) / (TRAVEL[1] - TRAVEL[0])), 1.35);
-      const scale = Math.pow(geometry.scaleEnd, travel);
+      const zoom = Math.pow(geometry.scaleEnd, travel);
       const pan = easeInOut(clamp((p - PAN[0]) / (PAN[1] - PAN[0])));
+      const settle = 1 - smoothstep(0, 0.3, p);
 
-      // Camera: pull in from further back on load, then travel to the window.
-      const camZ = perspective * (1 - 1 / scale) + (1 - arrive) * INTRO_PULLBACK;
-      // Seated outside: looking slightly up, leaning and turning a little with the pointer.
-      const settle = 1 - smoothstep(0, 0.35, p);
-      const tx = -geometry.windowX * pan - pointer.x * 20 * settle - (1 - arrive) * 90;
-      const ty = -geometry.windowY * pan - pointer.y * 12 * settle;
-      const rotY = pointer.x * 4 * settle;
-      const rotX = (2 - pointer.y * 3) * settle;
-      world.style.transform =
-        `translate3d(${tx.toFixed(2)}px, ${ty.toFixed(2)}px, ${camZ.toFixed(2)}px) ` +
-        `rotateX(${rotX.toFixed(3)}deg) rotateY(${rotY.toFixed(3)}deg)`;
+      // The camera: its distance (camZ) and its sideways offset (tx, ty).
+      const camZ = P * (1 - 1 / zoom) + (1 - arrive) * INTRO_PULLBACK;
+      const tx = -geometry.windowX * pan - pointer.x * 18 * settle - (1 - arrive) * 60;
+      const ty = -geometry.windowY * pan - pointer.y * 10 * settle;
 
-      // The title parts like curtains, then fades.
-      const part = smoothstep(0, 0.45, p);
-      const wordsOpacity = (1 - smoothstep(0.12, 0.3, p)) * smoothstep(0.1, 0.7, introT);
-      words.forEach((word) => {
-        const dir = Number(word.dataset.sceneWord) || 0;
-        const rise = (1 - arrive) * 48;
-        word.style.transform = `translate3d(${(dir * part * 18).toFixed(3)}vw, ${rise.toFixed(2)}px, 0)`;
-        word.style.opacity = wordsOpacity.toFixed(3);
+      layers.forEach(({ el, z }) => {
+        const depth = P - z - camZ;
+        if (depth < 30) {
+          el.style.visibility = 'hidden';
+          return;
+        }
+        const scale = (P - z) / depth;
+        const shift = (P / (P - z)) * scale;
+        el.style.visibility = '';
+        el.style.transform =
+          `translate3d(${(tx * shift).toFixed(2)}px, ${(ty * shift).toFixed(2)}px, 0) scale(${scale.toFixed(4)})`;
       });
 
-      // Things in front of the trailer pass by and are gone before the camera reaches them.
-      const passBy = (el, z, from, to) => {
-        if (!el) return;
-        const reach = perspective - z;
-        const opacity = 1 - smoothstep(reach * from, reach * to, camZ);
-        el.style.opacity = opacity.toFixed(3);
-        el.style.visibility = opacity <= 0.01 ? 'hidden' : '';
-      };
-      passBy(nearLights, nearZ, 0.35, 0.75);
-      passBy(sign, signZ, 0.45, 0.7);
-
-      // Light slides across the glossy panels as you look around and move in.
-      if (sheen) {
-        const sweep = 50 + pointer.x * 35 + (1 - arrive) * 60 - p * 140;
-        sheen.style.setProperty('--sheen', sweep.toFixed(2));
+      if (shutter) {
+        const open = easeInOut(clamp((p - SHUTTER[0]) / (SHUTTER[1] - SHUTTER[0])));
+        shutter.style.transform = `translate3d(0, ${(-open * 100).toFixed(2)}%, 0)`;
       }
-
-      if (glow) glow.style.opacity = smoothstep(0.3, 0.85, p).toFixed(3);
-      if (dusk) dusk.style.opacity = (smoothstep(0.15, 0.8, p) * 0.6).toFixed(3);
-
+      if (name) {
+        name.style.opacity = ((1 - smoothstep(0.02, 0.12, p)) * smoothstep(0.2, 0.8, introT)).toFixed(3);
+      }
+      if (glow) glow.style.opacity = smoothstep(0.2, 0.8, p).toFixed(3);
+      if (fade) fade.style.opacity = smoothstep(0.84, 0.97, p).toFixed(3);
       if (intro) {
-        const introOpacity = (1 - smoothstep(0, 0.12, p)) * smoothstep(0.35, 0.9, introT);
-        intro.style.opacity = introOpacity.toFixed(3);
-        intro.style.transform = `translateY(${((1 - smoothstep(0.35, 0.9, introT)) * 16 - p * 120).toFixed(2)}px)`;
-        intro.style.visibility = introOpacity <= 0.01 ? 'hidden' : '';
+        const shown = (1 - smoothstep(0, 0.08, p)) * smoothstep(0.35, 0.9, introT);
+        intro.style.opacity = shown.toFixed(3);
+        intro.style.transform = `translateY(${((1 - smoothstep(0.35, 0.9, introT)) * 16).toFixed(2)}px)`;
+        intro.style.visibility = shown <= 0.01 ? 'hidden' : '';
       }
-      if (cue) cue.style.opacity = ((1 - smoothstep(0, 0.05, p)) * smoothstep(0.7, 1, introT)).toFixed(3);
-      if (inside) inside.style.opacity = smoothstep(0.82, 0.97, p).toFixed(3);
+      if (cue) cue.style.opacity = ((1 - smoothstep(0, 0.04, p)) * smoothstep(0.7, 1, introT)).toFixed(3);
 
       const settling =
         introT < 1 ||
@@ -224,9 +182,11 @@
     }
 
     function clearMotion() {
-      world.style.transform = '';
-      if (sheen) sheen.style.removeProperty('--sheen');
-      [glow, dusk, intro, cue, inside, nearLights, sign, ...words].forEach((el) => {
+      layers.forEach(({ el }) => {
+        el.style.transform = '';
+        el.style.visibility = '';
+      });
+      [shutter, name, glow, fade, intro, cue].forEach((el) => {
         if (!el) return;
         el.style.opacity = '';
         el.style.transform = '';

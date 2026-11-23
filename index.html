@@ -6,7 +6,7 @@
   <title>On The Rocks Mobile Bar | Mobile Bartending in Milanville, PA</title>
   <meta name="description" content="On The Rocks is a fully insured, RAMP-certified mobile bar for weddings, birthdays, showers, graduations and get-togethers within 50 miles of Milanville, PA. Packages from $1,350.">
   <link rel="canonical" href="https://mobilebarontherocks.com/">
-  <meta name="theme-color" content="#0b0f12">
+  <meta name="theme-color" content="#faf7f2">
 
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="On The Rocks Mobile Bar">
@@ -21,8 +21,10 @@
   <link rel="icon" type="image/png" href="assets/img/favicon-64.png">
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
   <link rel="preload" href="assets/fonts/outfit-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="assets/img/scene-bar.webp" as="image" type="image/webp">
-  <link rel="preload" href="assets/img/scene-bar-sign.webp" as="image" type="image/webp">
+  <link rel="preload" href="assets/fonts/cormorant-garamond-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/great-vibes-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/img/hero-trailer.webp" as="image" type="image/webp">
+  <link rel="preload" href="assets/img/hero-venue.jpg" as="image" type="image/jpeg">
   <link rel="stylesheet" href="css/styles.css">
 
   <script>
@@ -43,7 +45,7 @@
     "url": "https://mobilebarontherocks.com/",
     "image": "https://mobilebarontherocks.com/assets/img/og-image.jpg",
     "logo": "https://mobilebarontherocks.com/assets/img/logo-dark.png",
-    "description": "Fully insured, RAMP-certified mobile bartending for weddings, birthdays, showers, graduations and get-togethers. Dry hire: you supply the alcohol, we supply everything else.",
+    "description": "Fully insured, RAMP-certified mobile bartending for weddings, birthdays, showers, graduations and get-togethers. You supply the alcohol; we supply everything else.",
     "address": {
       "@type": "PostalAddress",
       "addressLocality": "Milanville",
@@ -71,8 +73,7 @@
   <header class="site-header" data-header>
     <div class="site-header__inner container">
       <a class="brand" href="#top">
-        <img class="brand__logo brand__logo--on-dark" src="assets/img/logo-light.png" alt="" width="35" height="40">
-        <img class="brand__logo brand__logo--on-light" src="assets/img/logo-dark.png" alt="" width="35" height="40">
+        <img class="brand__logo" src="assets/img/logo-dark.png" alt="" width="35" height="40">
         <span class="brand__name">On The Rocks <span class="brand__sub">Mobile Bar</span></span>
       </a>
 
@@ -97,145 +98,54 @@
   <main id="main">
 
     <!--
-      Opening scene. You start outside the bar; scrolling moves the camera
-      through the service window. Layers sit at different depths (--z, in px)
-      inside one 3D world, so they shift against each other as it moves.
-      Optional background clip: set data-sky-video="assets/media/sky.mp4".
+      Opening scene: the bar at a wedding, its service window shut. Scrolling
+      rolls the shutter up and moves the camera in through the window.
+      Each layer has a depth (data-depth, in px); js/main.js moves them at
+      different rates so they separate as the camera travels.
     -->
-    <section class="scene" id="top" aria-labelledby="scene-title" data-scene data-sky-video=""
-             style="--wx: 0.6373; --wy: 0.2459; --ww: 0.3275; --wh: 0.1832">
+    <section class="scene" id="top" aria-labelledby="scene-title" data-scene>
       <div class="scene__stage" data-scene-stage>
-        <div class="scene__world" data-scene-world>
-
-          <div class="scene__layer scene__layer--plate" aria-hidden="true" data-scene-plate>
-            <img class="scene__plate" src="assets/img/scene-plate.jpg" alt="" width="860" height="1146" decoding="async">
-            <div class="scene__haze"></div>
-          </div>
-
-          <div class="scene__layer scene__layer--bokeh" aria-hidden="true">
-            <span class="bokeh" style="--x: 8%;  --y: 18%; --s: 1.4; --d: 11s"></span>
-            <span class="bokeh" style="--x: 21%; --y: 9%;  --s: 0.8; --d: 9s"></span>
-            <span class="bokeh" style="--x: 33%; --y: 24%; --s: 1.1; --d: 13s"></span>
-            <span class="bokeh" style="--x: 47%; --y: 6%;  --s: 0.7; --d: 10s"></span>
-            <span class="bokeh" style="--x: 58%; --y: 16%; --s: 1.6; --d: 14s"></span>
-            <span class="bokeh" style="--x: 69%; --y: 8%;  --s: 0.9; --d: 8s"></span>
-            <span class="bokeh" style="--x: 81%; --y: 21%; --s: 1.2; --d: 12s"></span>
-            <span class="bokeh" style="--x: 92%; --y: 11%; --s: 0.8; --d: 10s"></span>
-            <span class="bokeh" style="--x: 14%; --y: 52%; --s: 0.9; --d: 12s"></span>
-            <span class="bokeh" style="--x: 88%; --y: 48%; --s: 1.1; --d: 11s"></span>
-          </div>
-
-          <div class="scene__layer scene__layer--lights-far" aria-hidden="true">
-            <svg class="scene__lights" viewBox="0 0 1440 300" preserveAspectRatio="xMidYMin meet" focusable="false">
-              <defs>
-                <radialGradient id="bulb-far">
-                  <stop offset="0" stop-opacity="0.85"/>
-                  <stop offset="1" stop-opacity="0"/>
-                </radialGradient>
-              </defs>
-              <path class="scene__wire" d="M-40 110 Q720 250 1480 90"/>
-              <g transform="translate(21 121)"><line class="scene__wire" y2="10"/><circle cy="16" r="20" fill="url(#bulb-far)"/><ellipse class="scene__bulb" cy="16" rx="4" ry="6"/></g>
-              <g transform="translate(108 134)"><line class="scene__wire" y2="10"/><circle cy="16" r="20" fill="url(#bulb-far)"/><ellipse class="scene__bulb" cy="16" rx="4" ry="6"/></g>
-              <g transform="translate(196 146)"><line class="scene__wire" y2="10"/><circle cy="16" r="20" fill="url(#bulb-far)"/><ellipse class="scene__bulb" cy="16" rx="4" ry="6"/></g>
-              <g transform="translate(283 156)"><line class="scene__wire" y2="10"/><circle cy="16" r="20" fill="url(#bulb-far)"/><ellipse class="scene__bulb" cy="16" rx="4" ry="6"/></g>
-              <g transform="translate(370 164)"><line class="scene__wire" y2="10"/><circle cy="16" r="20" fill="url(#bulb-far)"/><ellipse class="scene__bulb" cy="16" rx="4" ry="6"/></g>
-              <g transform="translate(458 170)"><line class="scene__wire" y2="10"/><circle cy="16" r="20" fill="url(#bulb-far)"/><ellipse class="scene__bulb" cy="16" rx="4" ry="6"/></g>
-              <g transform="translate(545 173)"><line class="scene__wire" y2="10"/><circle cy="16" r="20" fill="url(#bulb-far)"/><ellipse class="scene__bulb" cy="16" rx="4" ry="6"/></g>
-              <g transform="translate(633 175)"><line class="scene__wire" y2="10"/><circle cy="16" r="20" fill="url(#bulb-far)"/><ellipse class="scene__bulb" cy="16" rx="4" ry="6"/></g>
-              <g transform="translate(720 175)"><line class="scene__wire" y2="10"/><circle cy="16" r="20" fill="url(#bulb-far)"/><ellipse class="scene__bulb" cy="16" rx="4" ry="6"/></g>
-              <g transform="translate(807 173)"><line class="scene__wire" y2="10"/><circle cy="16" r="20" fill="url(#bulb-far)"/><ellipse class="scene__bulb" cy="16" rx="4" ry="6"/></g>
-              <g transform="translate(895 169)"><line class="scene__wire" y2="10"/><circle cy="16" r="20" fill="url(#bulb-far)"/><ellipse class="scene__bulb" cy="16" rx="4" ry="6"/></g>
-              <g transform="translate(982 163)"><line class="scene__wire" y2="10"/><circle cy="16" r="20" fill="url(#bulb-far)"/><ellipse class="scene__bulb" cy="16" rx="4" ry="6"/></g>
-              <g transform="translate(1070 155)"><line class="scene__wire" y2="10"/><circle cy="16" r="20" fill="url(#bulb-far)"/><ellipse class="scene__bulb" cy="16" rx="4" ry="6"/></g>
-              <g transform="translate(1157 144)"><line class="scene__wire" y2="10"/><circle cy="16" r="20" fill="url(#bulb-far)"/><ellipse class="scene__bulb" cy="16" rx="4" ry="6"/></g>
-              <g transform="translate(1244 132)"><line class="scene__wire" y2="10"/><circle cy="16" r="20" fill="url(#bulb-far)"/><ellipse class="scene__bulb" cy="16" rx="4" ry="6"/></g>
-              <g transform="translate(1332 118)"><line class="scene__wire" y2="10"/><circle cy="16" r="20" fill="url(#bulb-far)"/><ellipse class="scene__bulb" cy="16" rx="4" ry="6"/></g>
-              <g transform="translate(1419 102)"><line class="scene__wire" y2="10"/><circle cy="16" r="20" fill="url(#bulb-far)"/><ellipse class="scene__bulb" cy="16" rx="4" ry="6"/></g>
-            </svg>
-          </div>
-
-          <h1 class="scene__layer scene__title" id="scene-title">
-            <span class="scene__word scene__word--start" data-scene-word="-1"><span>On The</span> <span>Rocks</span></span>
-            <span class="scene__word scene__word--end" data-scene-word="1"><span>Mobile</span> <span>Bar</span></span>
-          </h1>
-
-          <!-- The trailer, split by depth from one photo: the back wall and the
-               bartender stand behind the open window, the sign stands in front. -->
-          <div class="scene__layer scene__layer--back" aria-hidden="true">
-            <div class="scene__bar">
-              <img src="assets/img/scene-bar-back.webp" alt="" width="1267" height="1419" decoding="async">
-              <span class="scene__window-glow" data-scene-glow></span>
-            </div>
-          </div>
-
-          <div class="scene__layer scene__layer--bartender" aria-hidden="true">
-            <div class="scene__bar">
-              <img src="assets/img/scene-bar-bartender.webp" alt="" width="1267" height="1419" decoding="async">
-            </div>
-          </div>
-
-          <div class="scene__layer scene__layer--bar">
-            <div class="scene__bar" data-scene-bar>
-              <span class="scene__shadow" aria-hidden="true"></span>
-              <img class="scene__bar-body" src="assets/img/scene-bar.webp" alt="The On The Rocks bar: a black vintage trailer draped in eucalyptus, a bartender pouring a cocktail at the open service window, and a chalkboard sign reading Mobile Bar On the Rocks" width="1267" height="1419" fetchpriority="high" decoding="async">
-              <span class="scene__sheen" aria-hidden="true" data-scene-sheen></span>
-              <span class="scene__lantern" aria-hidden="true" style="--lx: 0.4996; --ly: 0.3200"></span>
-              <span class="scene__lantern" aria-hidden="true" style="--lx: 0.8208; --ly: 0.3235; --flicker-delay: -1.3s"></span>
-            </div>
-          </div>
-
-          <div class="scene__layer scene__layer--sign" aria-hidden="true" data-scene-sign>
-            <div class="scene__bar">
-              <img class="scene__bar-sign" src="assets/img/scene-bar-sign.webp" alt="" width="1267" height="1419" decoding="async">
-            </div>
-          </div>
-
-          <div class="scene__layer scene__layer--lights-near" aria-hidden="true" data-scene-lights-near>
-            <svg class="scene__lights" viewBox="0 0 1440 400" preserveAspectRatio="xMidYMin meet" focusable="false">
-              <defs>
-                <radialGradient id="bulb-near">
-                  <stop offset="0" stop-opacity="0.95"/>
-                  <stop offset="1" stop-opacity="0"/>
-                </radialGradient>
-              </defs>
-              <path class="scene__wire" d="M-60 30 Q720 330 1500 10"/>
-              <g transform="translate(2 53)"><line class="scene__wire" y2="14"/><circle cy="23" r="30" fill="url(#bulb-near)"/><ellipse class="scene__bulb" cy="23" rx="6" ry="9"/></g>
-              <g transform="translate(122 92)"><line class="scene__wire" y2="14"/><circle cy="23" r="30" fill="url(#bulb-near)"/><ellipse class="scene__bulb" cy="23" rx="6" ry="9"/></g>
-              <g transform="translate(242 123)"><line class="scene__wire" y2="14"/><circle cy="23" r="30" fill="url(#bulb-near)"/><ellipse class="scene__bulb" cy="23" rx="6" ry="9"/></g>
-              <g transform="translate(361 147)"><line class="scene__wire" y2="14"/><circle cy="23" r="30" fill="url(#bulb-near)"/><ellipse class="scene__bulb" cy="23" rx="6" ry="9"/></g>
-              <g transform="translate(481 163)"><line class="scene__wire" y2="14"/><circle cy="23" r="30" fill="url(#bulb-near)"/><ellipse class="scene__bulb" cy="23" rx="6" ry="9"/></g>
-              <g transform="translate(600 173)"><line class="scene__wire" y2="14"/><circle cy="23" r="30" fill="url(#bulb-near)"/><ellipse class="scene__bulb" cy="23" rx="6" ry="9"/></g>
-              <g transform="translate(720 175)"><line class="scene__wire" y2="14"/><circle cy="23" r="30" fill="url(#bulb-near)"/><ellipse class="scene__bulb" cy="23" rx="6" ry="9"/></g>
-              <g transform="translate(840 170)"><line class="scene__wire" y2="14"/><circle cy="23" r="30" fill="url(#bulb-near)"/><ellipse class="scene__bulb" cy="23" rx="6" ry="9"/></g>
-              <g transform="translate(959 157)"><line class="scene__wire" y2="14"/><circle cy="23" r="30" fill="url(#bulb-near)"/><ellipse class="scene__bulb" cy="23" rx="6" ry="9"/></g>
-              <g transform="translate(1079 138)"><line class="scene__wire" y2="14"/><circle cy="23" r="30" fill="url(#bulb-near)"/><ellipse class="scene__bulb" cy="23" rx="6" ry="9"/></g>
-              <g transform="translate(1198 111)"><line class="scene__wire" y2="14"/><circle cy="23" r="30" fill="url(#bulb-near)"/><ellipse class="scene__bulb" cy="23" rx="6" ry="9"/></g>
-              <g transform="translate(1318 76)"><line class="scene__wire" y2="14"/><circle cy="23" r="30" fill="url(#bulb-near)"/><ellipse class="scene__bulb" cy="23" rx="6" ry="9"/></g>
-              <g transform="translate(1438 35)"><line class="scene__wire" y2="14"/><circle cy="23" r="30" fill="url(#bulb-near)"/><ellipse class="scene__bulb" cy="23" rx="6" ry="9"/></g>
-            </svg>
+        <div class="scene__layer" data-depth="-420" aria-hidden="true">
+          <div class="scene__frame">
+            <img class="scene__img" src="assets/img/hero-venue.jpg" alt="" width="2048" height="1150" decoding="async">
           </div>
         </div>
 
-        <div class="scene__dusk" aria-hidden="true" data-scene-dusk></div>
+        <div class="scene__layer" data-depth="-14" aria-hidden="true">
+          <div class="scene__frame">
+            <img class="scene__interior" src="assets/img/hero-interior.webp" alt="" width="630" height="438" decoding="async">
+            <span class="scene__window-glow" data-scene-glow></span>
+          </div>
+        </div>
+
+        <div class="scene__layer" data-depth="0">
+          <div class="scene__frame" data-scene-frame>
+            <img class="scene__img" src="assets/img/hero-trailer.webp" alt="The On The Rocks bar: a glossy black vintage trailer with a wood-framed service window and brass lamps, set up at a wedding" width="2736" height="1536" fetchpriority="high" decoding="async">
+            <div class="scene__shutter" aria-hidden="true">
+              <img src="assets/img/hero-shutter.webp" alt="" width="550" height="358" data-scene-shutter>
+            </div>
+            <h1 class="scene__name" id="scene-title" data-scene-name>
+              <span class="scene__name-script">On The Rocks</span>
+              <span class="scene__name-sub">Mobile Bar</span>
+            </h1>
+          </div>
+        </div>
+
+        <div class="scene__fade" aria-hidden="true" data-scene-fade></div>
 
         <div class="scene__intro" data-scene-intro>
-          <p class="scene__tagline">A mobile bar that brings a unique experience to any event.</p>
-          <p class="scene__trust">Fully insured <span aria-hidden="true">·</span> RAMP-certified <span aria-hidden="true">·</span> Dry hire</p>
+          <p class="scene__tagline">An elegant mobile bar for weddings and celebrations.</p>
+          <p class="scene__trust">Fully insured <span aria-hidden="true">·</span> RAMP-certified <span aria-hidden="true">·</span> You bring the alcohol, we bring the rest</p>
           <div class="scene__actions">
-            <a class="btn btn--dark" href="#book">
-              Check your date
-              <span class="btn__icon" aria-hidden="true"><svg viewBox="0 0 16 16" width="16" height="16" focusable="false"><path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            </a>
-            <a class="btn btn--outline-dark" href="#packages">See packages</a>
+            <a class="btn btn--primary" href="#book">Check your date</a>
+            <a class="btn btn--outline" href="#packages">See packages</a>
           </div>
         </div>
 
         <p class="scene__cue" aria-hidden="true" data-scene-cue>
-          Scroll to step inside
+          Scroll to open the bar
           <span class="scene__cue-line"></span>
         </p>
-
-        <div class="scene__inside" aria-hidden="true" data-scene-inside></div>
       </div>
     </section>
 
@@ -247,7 +157,7 @@
         </div>
         <div class="inside__body">
           <p class="lead">On The Rocks is a fully insured, RAMP-certified bartending company for birthdays, graduations, bridal and baby showers, weddings and get-togethers.</p>
-          <p>Because of state laws and regulations, we're a dry-hire bar: you supply the alcohol, and we supply everything else. That means the bar, your bartenders, ice, mixers, garnishes and decor.</p>
+          <p>Because of state laws and regulations, you supply the alcohol and we supply everything else: the bar, your bartenders, ice, mixers, garnishes and decor.</p>
           <ul class="chips" aria-label="Events we serve">
             <li class="chip">Weddings</li>
             <li class="chip">Birthdays</li>
@@ -263,13 +173,13 @@
         <ul class="facts">
           <li class="fact"><span class="fact__value">Insured</span><span class="fact__label">Fully insured for your event</span></li>
           <li class="fact"><span class="fact__value">RAMP</span><span class="fact__label">Certified bartenders</span></li>
-          <li class="fact"><span class="fact__value">Dry hire</span><span class="fact__label">You choose the alcohol</span></li>
+          <li class="fact"><span class="fact__value">Your bottles</span><span class="fact__label">We bring everything else</span></li>
           <li class="fact"><span class="fact__value">50 mi</span><span class="fact__label">Travel included from Milanville</span></li>
         </ul>
       </div>
     </section>
 
-    <section class="section" id="how" aria-labelledby="how-title">
+    <section class="section section--alt" id="how" aria-labelledby="how-title">
       <div class="container">
         <div class="section-head">
           <p class="eyebrow">How it works</p>
@@ -370,7 +280,7 @@
       </div>
     </section>
 
-    <section class="section" id="gallery" aria-labelledby="gallery-title">
+    <section class="section section--alt" id="gallery" aria-labelledby="gallery-title">
       <div class="container">
         <div class="section-head">
           <p class="eyebrow">The real thing</p>
@@ -423,7 +333,7 @@
       </div>
     </section>
 
-    <section class="section" id="book" aria-labelledby="book-title">
+    <section class="section section--alt" id="book" aria-labelledby="book-title">
       <div class="container book">
         <div class="book__intro">
           <div class="section-head section-head--flush">
