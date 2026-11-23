@@ -74,7 +74,7 @@
     // Phases of the camera move, as fractions of the scroll through the scene.
     const TRAVEL = [0.04, 0.92]; // camera leaves its seat .. reaches the window
     const PAN = [0.04, 0.7];     // window drifts to the centre of the view
-    const HEADER_OVER_UNTIL = 0.3;
+    const HEADER_OVER_UNTIL = 0.15;
     const MAX_ZOOM = 7;          // beyond this the photo turns soft
     const INTRO_MS = 1800;       // the arrival animation on load
     const INTRO_PULLBACK = -220;
@@ -178,7 +178,7 @@
 
       // The title parts like curtains, then fades.
       const part = smoothstep(0, 0.45, p);
-      const wordsOpacity = (1 - smoothstep(0.22, 0.48, p)) * smoothstep(0.1, 0.7, introT);
+      const wordsOpacity = (1 - smoothstep(0.12, 0.3, p)) * smoothstep(0.1, 0.7, introT);
       words.forEach((word) => {
         const dir = Number(word.dataset.sceneWord) || 0;
         const rise = (1 - arrive) * 48;

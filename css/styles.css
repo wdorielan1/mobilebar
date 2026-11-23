@@ -61,11 +61,12 @@
   --text-h3: 1.5rem;
   --text-price: 3rem;
   --text-h2: clamp(2.25rem, 1.5rem + 3vw, 4rem);
-  --text-display: clamp(3.25rem, 1rem + 7.5vw, 9rem);
+  /* the scene title: as large as the space beside the trailer allows */
+  --text-display: clamp(3.25rem, min(1rem + 7.5vw, 13.33vw - 7.88vh), 9rem);
   --text-ui: 1rem;            /* buttons, fields, brand */
   --text-ui-sm: 0.9375rem;    /* small buttons, nav, pills */
   --text-micro: 0.75rem;      /* the brand's second line */
-  --text-display-narrow: 14vw;
+  --text-display-narrow: min(13vw, 8rem);
   --leading-none: 1;
   --leading-display: 0.9;
   --leading-heading: 1.08;
@@ -155,7 +156,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   outline: var(--focus-width) solid var(--color-teal);
   outline-offset: var(--focus-offset);
 }
-.is-over-scene :focus-visible,
+.is-over-scene:not(.is-nav-open) :focus-visible,
 .scene :focus-visible { outline-color: var(--color-on-ice); }
 
 .visually-hidden {
@@ -583,7 +584,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .scene__layer--sign { --z: 70; }
 
 .scene__bar {
-  --bar-w: min(104vw, calc(86vh * 0.8929));
+  --bar-w: min(50vw, calc(86vh * 0.8929));
   position: absolute;
   left: 50%;
   bottom: -4vh;
@@ -680,7 +681,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   right: max(var(--space-3), (100% - var(--container)) / 2);
   bottom: var(--space-7);
   z-index: 2;
-  width: min(22rem, 100% - 2 * var(--space-3));
+  width: min(22rem, 26vw, 100% - 2 * var(--space-3));
 }
 .scene__tagline {
   font-size: var(--text-lead);
@@ -762,9 +763,9 @@ html:not(.js) .scene__cue { display: none; }
 html:not(.js) .bokeh,
 html:not(.js) .scene__lantern { animation: none; }
 
-/* Phones and narrow screens: the title stacks above the bar, and the bar is
-   shifted so its service window sits near the middle. */
-@media (max-width: 47.99rem) {
+/* Phones, portrait tablets and near-square screens: the title stacks above the
+   bar, and the bar is shifted so its service window sits near the middle. */
+@media (max-width: 47.99rem), (max-aspect-ratio: 5/4) {
   .scene__title {
     flex-direction: column;
     align-items: center;
