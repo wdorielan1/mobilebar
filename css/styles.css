@@ -92,6 +92,7 @@
   --tracking-tight: -0.01em;
   --tracking-eyebrow: 0.2em;
   --tracking-caps: 0.32em;
+  --tracking-button: 0.04em;
 
   /* Focus */
   --focus-width: 3px;
@@ -117,6 +118,8 @@
   --container: 72rem;
   --header-h: 4.5rem;     /* 72 */
   --control-h: 3rem;      /* 48: also the smallest touch target used */
+  --logo-h: 2.5rem;       /* 40 */
+  --icon-bar: 2px;        /* the menu icon's strokes */
 
   /* Motion */
   --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
@@ -124,10 +127,9 @@
   --duration: 300ms;
   --duration-slow: 700ms;
 
-  /* Opening scene: the hero photograph's size, and where the camera aims */
+  /* Opening scene: the hero photograph's size (js/main.js keeps the camera's own numbers) */
   --scene-img-w: 2736;
   --scene-img-h: 1536;
-  --scene-perspective: 1000;
 }
 
 /* ---------- Base ---------- */
@@ -183,7 +185,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
   top: var(--space-1);
   left: var(--space-1);
   z-index: 100;
-  padding: var(--space-1) var(--space-2);
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-h);
+  padding: 0 var(--space-2);
   border-radius: var(--radius-sm);
   background: var(--color-dark);
   color: var(--color-on-dark);
@@ -211,7 +216,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   border-radius: var(--radius-pill);
   font-size: var(--text-ui-sm);
   font-weight: var(--weight-medium);
-  letter-spacing: 0.04em;
+  letter-spacing: var(--tracking-button);
   line-height: var(--leading-none);
   text-decoration: none;
   white-space: nowrap;
@@ -329,7 +334,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
   margin-right: auto;
   text-decoration: none;
 }
-.brand__logo { width: auto; height: 2.5rem; }
+.brand__logo { width: auto; height: var(--logo-h); }
 .brand__name {
   display: flex;
   flex-direction: column;
@@ -362,6 +367,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 .nav-toggle {
   display: none;
+  flex: none;
   width: var(--control-h);
   height: var(--control-h);
   padding: 0;
@@ -374,18 +380,18 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .nav-toggle__bars::before,
 .nav-toggle__bars::after {
   display: block;
-  width: 1.25rem;
-  height: 2px;
+  width: var(--space-3);
+  height: var(--icon-bar);
   margin-inline: auto;
-  border-radius: 2px;
+  border-radius: var(--icon-bar);
   background: currentColor;
   transition: transform var(--duration) var(--ease-out), opacity var(--duration-fast);
 }
 .nav-toggle__bars { position: relative; }
 .nav-toggle__bars::before,
 .nav-toggle__bars::after { content: ""; position: absolute; left: 0; }
-.nav-toggle__bars::before { transform: translateY(-6px); }
-.nav-toggle__bars::after { transform: translateY(6px); }
+.nav-toggle__bars::before { transform: translateY(calc(var(--space-1) * -1)); }
+.nav-toggle__bars::after { transform: translateY(var(--space-1)); }
 .is-nav-open .nav-toggle__bars { background: transparent; }
 .is-nav-open .nav-toggle__bars::before { transform: rotate(45deg); }
 .is-nav-open .nav-toggle__bars::after { transform: rotate(-45deg); }
@@ -427,6 +433,8 @@ button, input, select, textarea { font: inherit; color: inherit; }
   html:not(.js) .site-header { position: relative; height: auto; }
   html:not(.js) .site-header__inner { flex-wrap: wrap; padding-block: var(--space-1); }
   html:not(.js) .site-nav { order: 4; width: 100%; overflow-x: auto; }
+  html:not(.js) .site-nav__list { flex-wrap: nowrap; }
+  html:not(.js) .site-nav a { white-space: nowrap; }
 }
 
 @media (max-width: 30rem) {
@@ -457,7 +465,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
   position: relative;
   height: 100vh;
   height: 100svh;
-  min-height: 32rem;
   overflow: hidden;
   isolation: isolate;
   background: var(--color-bg-alt);
@@ -661,6 +668,18 @@ button, input, select, textarea { font: inherit; color: inherit; }
 html:not(.js) .scene__cue,
 html:not(.js) .scene__shutter { display: none; }
 
+/* Short screens (phones held sideways, small phones): a compact intro card. */
+@media (max-width: 47.99rem) and (max-height: 46rem), (max-height: 30rem) {
+  .scene__tagline { display: none; }
+  .scene__trust { display: none; }
+  .scene__actions { margin-top: 0; }
+  .scene__intro { padding: var(--space-2); }
+  .scene__cue { display: none; }
+}
+@media (max-width: 21rem) {
+  .scene__actions .btn--outline { display: none; }
+}
+
 /* Wide screens leave room beside the trailer for the intro card. */
 @media (min-width: 64rem) {
   .scene__intro { bottom: var(--space-6); }
@@ -668,7 +687,7 @@ html:not(.js) .scene__shutter { display: none; }
 
 /* Phones, portrait tablets and near-square screens: the window is centred,
    the trailer fills the screen, and the intro sits along the bottom. */
-@media (max-width: 47.99rem), (max-aspect-ratio: 5/4) {
+@media (max-width: 47.99rem) and (orientation: portrait), (max-aspect-ratio: 5/4) {
   .scene__frame {
     --frame-h: 116vh;
     --frame-h: 116svh;
@@ -992,6 +1011,11 @@ html:not(.js) .scene__shutter { display: none; }
 }
 .field__input:hover { border-color: var(--color-line-hover); }
 .field__input:focus-visible { border-color: var(--color-text); }
+.field__input[type="date"]:focus-within {
+  border-color: var(--color-text);
+  outline: var(--focus-width) solid var(--color-text);
+  outline-offset: var(--focus-offset);
+}
 .field__input:user-invalid { border-color: var(--color-error); }
 
 .field__select { appearance: none; padding-right: var(--space-5); }
@@ -1012,7 +1036,7 @@ html:not(.js) .scene__shutter { display: none; }
 }
 
 .field__textarea {
-  min-height: 8rem;
+  min-height: var(--space-8);
   padding-block: var(--space-2);
   resize: vertical;
   line-height: var(--leading-relaxed);

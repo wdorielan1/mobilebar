@@ -36,12 +36,7 @@ opening picture held still, with the window already open.
 | **Form destination** | `index.html`, the `<form action="…REPLACE_WITH_FORM_ID">` | Until it's set, sending the form shows a note asking visitors to message you on Facebook or Instagram. With [Formspree](https://formspree.io), create a form and paste its ID in place of `REPLACE_WITH_FORM_ID`. |
 | **Email and phone** | `index.html`, the `CONTACT DETAILS` comment in the booking section | The old site published neither, so none are shown. |
 
-## The opening scene's images (made with Higgsfield)
-
-The trailer in the opening scene is an AI-generated image (Higgsfield, FLUX 3), made from
-your two trailer photos so it keeps your trailer's shape: glossy black, wood-framed window,
-brass lamps. The bartender in the open window is AI-generated too, not one of your staff.
-The gallery further down uses your real photos.
+## The opening scene's images
 
 - `hero-venue.jpg`: the wedding venue, with the trailer and its hitch painted out.
 - `hero-trailer.webp`: the trailer cut out, with the service window's opening left clear.
