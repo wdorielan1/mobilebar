@@ -63,14 +63,19 @@
     const cue = scene.querySelector('[data-scene-cue]');
     const inside = scene.querySelector('[data-scene-inside]');
     const plate = scene.querySelector('[data-scene-plate]');
+    const sign = scene.querySelector('[data-scene-sign]');
+    const sheen = scene.querySelector('[data-scene-sheen]');
 
     const perspective = parseFloat(getComputedStyle(root).getPropertyValue('--scene-perspective')) || 1000;
-    const nearZ = nearLights ? parseFloat(getComputedStyle(nearLights).getPropertyValue('--z')) || 0 : 0;
+    const depthOf = (el) => (el ? parseFloat(getComputedStyle(el).getPropertyValue('--z')) || 0 : 0);
+    const nearZ = depthOf(nearLights);
+    const signZ = depthOf(sign);
 
     // Phases of the camera move, as fractions of the scroll through the scene.
     const TRAVEL = [0.04, 0.92]; // camera leaves its seat .. reaches the window
     const PAN = [0.04, 0.7];     // window drifts to the centre of the view
     const HEADER_OVER_UNTIL = 0.3;
+    const MAX_ZOOM = 7;          // beyond this the photo turns soft
     const INTRO_MS = 1800;       // the arrival animation on load
     const INTRO_PULLBACK = -220;
 
@@ -115,7 +120,7 @@
       const windowY = bar.offsetTop + wy * bar.offsetHeight - sh / 2;
       // How much bigger the window must get to fill the view.
       const fill = Math.max((sw * 1.1) / (ww * bar.offsetWidth), (sh * 1.1) / (wh * bar.offsetHeight));
-      const scaleEnd = Math.min(Math.max(fill, 1.01), 1 / (1 - 0.94));
+      const scaleEnd = Math.min(Math.max(fill, 1.01), MAX_ZOOM);
       geometry = { windowX, windowY, scaleEnd };
     }
 
@@ -159,11 +164,11 @@
 
       // Camera: pull in from further back on load, then travel to the window.
       const camZ = perspective * (1 - 1 / scale) + (1 - arrive) * INTRO_PULLBACK;
-      const tx = -geometry.windowX * pan;
-      const ty = -geometry.windowY * pan;
-      // Seated outside: looking slightly up, turning a little with the pointer.
+      // Seated outside: looking slightly up, leaning and turning a little with the pointer.
       const settle = 1 - smoothstep(0, 0.35, p);
-      const rotY = pointer.x * 5 * settle;
+      const tx = -geometry.windowX * pan - pointer.x * 20 * settle - (1 - arrive) * 90;
+      const ty = -geometry.windowY * pan - pointer.y * 12 * settle;
+      const rotY = pointer.x * 4 * settle;
       const rotX = (2 - pointer.y * 3) * settle;
       world.style.transform =
         `translate3d(${tx.toFixed(2)}px, ${ty.toFixed(2)}px, ${camZ.toFixed(2)}px) ` +
@@ -179,12 +184,21 @@
         word.style.opacity = wordsOpacity.toFixed(3);
       });
 
-      // Near string lights pass overhead and are gone before the camera reaches them.
-      if (nearLights) {
-        const reach = perspective - nearZ;
-        const lightsOpacity = 1 - smoothstep(reach * 0.35, reach * 0.75, camZ);
-        nearLights.style.opacity = lightsOpacity.toFixed(3);
-        nearLights.style.visibility = lightsOpacity <= 0.01 ? 'hidden' : '';
+      // Things in front of the trailer pass by and are gone before the camera reaches them.
+      const passBy = (el, z, from, to) => {
+        if (!el) return;
+        const reach = perspective - z;
+        const opacity = 1 - smoothstep(reach * from, reach * to, camZ);
+        el.style.opacity = opacity.toFixed(3);
+        el.style.visibility = opacity <= 0.01 ? 'hidden' : '';
+      };
+      passBy(nearLights, nearZ, 0.35, 0.75);
+      passBy(sign, signZ, 0.45, 0.7);
+
+      // Light slides across the glossy panels as you look around and move in.
+      if (sheen) {
+        const sweep = 50 + pointer.x * 35 + (1 - arrive) * 60 - p * 140;
+        sheen.style.setProperty('--sheen', sweep.toFixed(2));
       }
 
       if (glow) glow.style.opacity = smoothstep(0.3, 0.85, p).toFixed(3);
@@ -209,7 +223,8 @@
 
     function clearMotion() {
       world.style.transform = '';
-      [glow, dusk, intro, cue, inside, nearLights, ...words].forEach((el) => {
+      if (sheen) sheen.style.removeProperty('--sheen');
+      [glow, dusk, intro, cue, inside, nearLights, sign, ...words].forEach((el) => {
         if (!el) return;
         el.style.opacity = '';
         el.style.transform = '';

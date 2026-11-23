@@ -22,6 +22,7 @@
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
   <link rel="preload" href="assets/fonts/outfit-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/img/scene-bar.webp" as="image" type="image/webp">
+  <link rel="preload" href="assets/img/scene-bar-sign.webp" as="image" type="image/webp">
   <link rel="stylesheet" href="css/styles.css">
 
   <script>
@@ -101,7 +102,8 @@
       inside one 3D world, so they shift against each other as it moves.
       Optional background clip: set data-sky-video="assets/media/sky.mp4".
     -->
-    <section class="scene" id="top" aria-labelledby="scene-title" data-scene data-sky-video="">
+    <section class="scene" id="top" aria-labelledby="scene-title" data-scene data-sky-video=""
+             style="--wx: 0.6373; --wy: 0.2459; --ww: 0.3275; --wh: 0.1832">
       <div class="scene__stage" data-scene-stage>
         <div class="scene__world" data-scene-world>
 
@@ -157,11 +159,34 @@
             <span class="scene__word scene__word--end" data-scene-word="1"><span>Mobile</span> <span>Bar</span></span>
           </h1>
 
+          <!-- The trailer, split by depth from one photo: the back wall and the
+               bartender stand behind the open window, the sign stands in front. -->
+          <div class="scene__layer scene__layer--back" aria-hidden="true">
+            <div class="scene__bar">
+              <img src="assets/img/scene-bar-back.webp" alt="" width="1267" height="1419" decoding="async">
+              <span class="scene__window-glow" data-scene-glow></span>
+            </div>
+          </div>
+
+          <div class="scene__layer scene__layer--bartender" aria-hidden="true">
+            <div class="scene__bar">
+              <img src="assets/img/scene-bar-bartender.webp" alt="" width="1267" height="1419" decoding="async">
+            </div>
+          </div>
+
           <div class="scene__layer scene__layer--bar">
-            <div class="scene__bar" style="--wx: 0.6373; --wy: 0.2459; --ww: 0.3275; --wh: 0.1832" data-scene-bar>
+            <div class="scene__bar" data-scene-bar>
               <span class="scene__shadow" aria-hidden="true"></span>
-              <img src="assets/img/scene-bar.webp" alt="The On The Rocks bar: a black vintage trailer draped in eucalyptus, a bartender pouring a cocktail at the open service window, and a chalkboard sign reading Mobile Bar On the Rocks" width="1267" height="1419" fetchpriority="high" decoding="async">
-              <span class="scene__window-glow" aria-hidden="true" data-scene-glow></span>
+              <img class="scene__bar-body" src="assets/img/scene-bar.webp" alt="The On The Rocks bar: a black vintage trailer draped in eucalyptus, a bartender pouring a cocktail at the open service window, and a chalkboard sign reading Mobile Bar On the Rocks" width="1267" height="1419" fetchpriority="high" decoding="async">
+              <span class="scene__sheen" aria-hidden="true" data-scene-sheen></span>
+              <span class="scene__lantern" aria-hidden="true" style="--lx: 0.4996; --ly: 0.3200"></span>
+              <span class="scene__lantern" aria-hidden="true" style="--lx: 0.8208; --ly: 0.3235; --flicker-delay: -1.3s"></span>
+            </div>
+          </div>
+
+          <div class="scene__layer scene__layer--sign" aria-hidden="true" data-scene-sign>
+            <div class="scene__bar">
+              <img class="scene__bar-sign" src="assets/img/scene-bar-sign.webp" alt="" width="1267" height="1419" decoding="async">
             </div>
           </div>
 
@@ -341,7 +366,7 @@
             </div>
             <div class="extras__item">
               <dt>Travel</dt>
-              <dd>Included within 50 miles of 18443. Beyond that, $1 per mile round trip.</dd>
+              <dd>Included within 50 miles of ZIP 18443. Beyond that, $1 per mile round trip.</dd>
             </div>
           </dl>
         </div>
@@ -399,7 +424,7 @@
       </div>
     </section>
 
-    <section class="section section--book" id="book" aria-labelledby="book-title">
+    <section class="section" id="book" aria-labelledby="book-title">
       <div class="container book">
         <div class="book__intro">
           <p class="eyebrow">Questions or booking</p>
@@ -442,16 +467,18 @@
             </div>
             <div class="field">
               <label class="field__label" for="f-type">Event type</label>
+              <span class="field__select-wrap">
               <select class="field__input field__select" id="f-type" name="event_type">
-                <option value="">Choose one</option>
-                <option>Wedding</option>
-                <option>Birthday</option>
-                <option>Graduation</option>
-                <option>Bridal shower</option>
-                <option>Baby shower</option>
-                <option>Get-together</option>
-                <option>Something else</option>
-              </select>
+                  <option value="">Choose one</option>
+                  <option>Wedding</option>
+                  <option>Birthday</option>
+                  <option>Graduation</option>
+                  <option>Bridal shower</option>
+                  <option>Baby shower</option>
+                  <option>Get-together</option>
+                  <option>Something else</option>
+                </select>
+              </span>
             </div>
             <div class="field">
               <label class="field__label" for="f-date">Event date <span class="field__req" aria-hidden="true">*</span></label>
@@ -463,12 +490,14 @@
             </div>
             <div class="field">
               <label class="field__label" for="f-package">Package</label>
+              <span class="field__select-wrap">
               <select class="field__input field__select" id="f-package" name="package">
-                <option value="">Not sure yet</option>
-                <option>Bronze</option>
-                <option>Silver</option>
-                <option>Gold</option>
-              </select>
+                  <option value="">Not sure yet</option>
+                  <option>Bronze</option>
+                  <option>Silver</option>
+                  <option>Gold</option>
+                </select>
+              </span>
             </div>
             <div class="field">
               <label class="field__label" for="f-where">Event town or venue</label>

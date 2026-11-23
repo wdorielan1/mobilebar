@@ -57,10 +57,19 @@ assets/media/           optional Higgsfield clip goes here
 
 - `logo-dark.png` / `logo-light.png`: the glass-and-wheel logo from the old site, cropped,
   with dark lines for the light hero and white lines for the dark sections.
-- `scene-bar.webp`: the eucalyptus-trailer photo with the background removed.
-  `scene-plate.jpg` is the same photo with the trailer removed and blurred, used as the
-  background so the two can move separately.
-- `gallery-*.jpg`: your two photos, cropped from the phone screenshots.
+- The trailer in the opening scene is your eucalyptus photo, warm-graded and split into
+  depths so it reads as 3D. Every file is the same size, so they line up exactly from the
+  starting camera:
+  - `scene-bar-back.webp`: the back wall of the bar, seen through the window (the
+    bartender and lanterns painted out, slightly enlarged so the window never shows an edge);
+  - `scene-bar-bartender.webp`: the bartender alone;
+  - `scene-bar.webp`: the trailer body, with the service window cut open and the part the
+    sign hid filled in;
+  - `scene-bar-sign.webp`: the chalkboard sign, which stands in front;
+  - `scene-bar-gloss.webp`: a mask of the glossy black panels, where the moving sheen shows.
+- `scene-plate.jpg`: the same photo with the trailer removed and blurred, used as the
+  background so the layers can move separately.
+- `gallery-*.jpg`: your two photos, cropped from the phone screenshots, with the same warm grade.
 
 If you swap the hero photo, the service window's position inside it is set on
 `.scene__bar` in `index.html` (`--wx`, `--wy`, `--ww`, `--wh`, as fractions of the image),
