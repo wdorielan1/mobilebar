@@ -129,8 +129,10 @@
       const top = scene.getBoundingClientRect().top;
       target = distance > 0 ? clamp(-top / distance) : 0;
       if (header) {
-        const overScene = scene.getBoundingClientRect().bottom > header.offsetHeight && target < HEADER_OVER_UNTIL;
-        header.classList.toggle('is-over-scene', overScene);
+        // See-through only while it sits over the light sky at the top of the scene.
+        const scrolled = -top;
+        const skyUntil = distance > 0 ? distance * HEADER_OVER_UNTIL : stage.offsetHeight * 0.08;
+        header.classList.toggle('is-over-scene', scrolled < skyUntil);
       }
     }
 
